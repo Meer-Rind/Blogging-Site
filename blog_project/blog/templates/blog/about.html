@@ -1,0 +1,121 @@
+{% extends "blog/base.html" %}
+{% block title %}About{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm" data-aos="fade-up">
+    <div class="card-body p-5">
+        <div class="text-center mb-5">
+            <h1 class="display-4 fw-bold gradient-text">About Flash Blog</h1>
+            <div class="d-flex justify-content-center">
+                <div style="width: 100px; height: 4px; background: var(--gradient); border-radius: 2px;"></div>
+            </div>
+        </div>
+        
+        <div class="row align-items-center mb-5">
+            <div class="col-lg-6" data-aos="fade-right">
+                <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" 
+                     alt="Blogging" class="img-fluid rounded-3 shadow">
+            </div>
+            <div class="col-lg-6 mt-4 mt-lg-0" data-aos="fade-left">
+                <p class="lead">Welcome to Flash Blog, a platform where you can share your thoughts, ideas, and stories with the world.</p>
+                <p>Our intuitive interface makes it easy to create, edit, and publish your content, while our community features help you connect with readers and other writers.</p>
+            </div>
+        </div>
+        
+        <div class="row text-center mb-5">
+            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="p-4 rounded-3 bg-white shadow-sm h-100">
+                    <div class="icon-circle bg-primary text-white mb-3 mx-auto" style="width: 60px; height: 60px;">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Fast</h3>
+                    <p class="text-muted">Lightning-fast performance for seamless writing and reading experience.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="p-4 rounded-3 bg-white shadow-sm h-100">
+                    <div class="icon-circle bg-primary text-white mb-3 mx-auto" style="width: 60px; height: 60px;">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h3>Secure</h3>
+                    <p class="text-muted">Your data is protected with industry-standard security measures.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="p-4 rounded-3 bg-white shadow-sm h-100">
+                    <div class="icon-circle bg-primary text-white mb-3 mx-auto" style="width: 60px; height: 60px;">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Community</h3>
+                    <p class="text-muted">Connect with like-minded individuals and grow your audience.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mb-5">
+            <h3 class="fw-bold gradient-text mb-4">Our Mission</h3>
+            <div class="row">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <p>Our mission is to provide a simple yet powerful platform for bloggers to express themselves and connect with like-minded individuals. We believe everyone has a story to tell, and we're here to help you share yours.</p>
+                    <p>Whether you're a seasoned writer or just starting out, Flash Blog gives you the tools you need to create beautiful content and reach your audience.</p>
+                </div>
+                <div class="col-lg-6" data-aos="fade-left">
+                    <div class="p-4 bg-primary text-white rounded-3 shadow">
+                        <i class="fas fa-quote-left fa-2x mb-3 opacity-25"></i>
+                        <p class="lead mb-0">"Flash Blog has transformed the way I share my thoughts with the world. The intuitive interface and beautiful design make writing a joy."</p>
+                        <div class="d-flex align-items-center mt-3">
+                            <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="User" class="rounded-circle me-3" width="50">
+                            <div>
+                                <h6 class="mb-0">Sarah Johnson</h6>
+                                <small class="text-white-50">Writer & Blogger</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mb-5">
+            <h3 class="fw-bold gradient-text mb-4">Meet the Developer</h3>
+            <div class="row align-items-center">
+                <div class="col-md-4 mb-4 mb-md-0" data-aos="fade-right">
+                    {% load static %}
+                    <img src="/media/logo.png" class="img-fluid rounded-3 shadow">
+
+                </div>
+                <div class="col-md-8" data-aos="fade-left">
+                    <p>Flash Blog was developed by Meer Rind, a passionate full-stack developer dedicated to creating beautiful, functional web applications.</p>
+                    <p>With a focus on user experience and clean code, Meer has built Flash Blog to be both powerful and easy to use.</p>
+                    <a href="https://github.com/meer-rind" target="_blank" class="btn btn-outline-primary mt-2">
+                        <i class="fab fa-github me-2"></i> View GitHub Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .gradient-text {
+        background: var(--gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .icon-circle {
+        background: var(--gradient);
+        box-shadow: 0 5px 20px rgba(67, 97, 238, 0.3);
+        transition: all 0.3s ease;
+    }
+    
+    .icon-circle:hover {
+        transform: rotate(15deg) scale(1.1);
+    }
+    
+    .feature-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        color: var(--primary-color);
+    }
+</style>
+{% endblock %}

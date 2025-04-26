@@ -1,0 +1,174 @@
+{% extends "blog/base.html" %}
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm mb-4" data-aos="zoom-in">
+    {% if post.image %}
+    <img src="{{ post.image.url }}" class="card-img-top post-image" alt="{{ post.title }}">
+    {% endif %}
+    <div class="card-body">
+        <h1 class="card-title gradient-text">{{ post.title }}</h1>
+        <p class="text-muted">
+            Posted by <a href="{% url 'user-posts' post.author.username %}" class="text-decoration-none hover-gradient">{{ post.author.username }}</a> 
+            on {{ post.date_posted|date:"F d, Y" }}
+        </p>
+        <div class="card-text mb-4 post-content">{{ post.content|linebreaks }}</div>
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <a href="{% url 'like-post' post.pk %}" class="btn btn-like {% if user in post.likes.all %}liked{% endif %}">
+                    {% if user in post.likes.all %}
+                    <i class="fas fa-heart"></i>
+                    {% else %}
+                    <i class="far fa-heart"></i>
+                    {% endif %}
+                    <span class="ms-1">{{ post.total_likes }}</span>
+                </a>
+                <span class="ms-3"><i class="far fa-comment"></i> {{ post.comments.count }}</span>
+            </div>
+            {% if user == post.author %}
+            <div>
+                <a href="{% url 'post-update' post.pk %}" class="btn btn-outline-primary btn-sm hover-effect">
+                    <i class="fas fa-edit me-1"></i> Edit
+                </a>
+                <a href="{% url 'post-delete' post.pk %}" class="btn btn-outline-danger btn-sm hover-effect">
+                    <i class="fas fa-trash-alt me-1"></i> Delete
+                </a>
+            </div>
+            {% endif %}
+        </div>
+
+        <hr data-aos="fade">
+        
+        <h4 class="mb-4" data-aos="fade-up"><i class="fas fa-comments me-2"></i> Comments</h4>
+        {% for comment in post.comments.all %}
+            {% if comment.approved_comment %}
+            <div class="card mb-3" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|mul:50 }}">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <img src="https://ui-avatars.com/api/?name={{ comment.author.username }}&background=random" 
+                                 alt="{{ comment.author.username }}" class="rounded-circle me-3" width="40">
+                            <strong>{{ comment.author.username }}</strong>
+                        </div>
+                        <small class="text-muted">{{ comment.created_date|timesince }} ago</small>
+                    </div>
+                    <p class="mt-2 mb-0">{{ comment.text }}</p>
+                </div>
+            </div>
+            {% endif %}
+        {% empty %}
+        <div class="alert alert-info" data-aos="fade-up">
+            <i class="fas fa-info-circle me-2"></i> No comments yet. Be the first to comment!
+        </div>
+        {% endfor %}
+
+        {% if user.is_authenticated %}
+        <form method="POST" action="{% url 'add-comment' post.pk %}" class="mt-4" data-aos="fade-up">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="id_text" class="form-label">Add a comment</label>
+                <textarea name="text" id="id_text" class="form-control" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary pulse">
+                <i class="fas fa-paper-plane me-2"></i> Submit
+            </button>
+        </form>
+        {% else %}
+        <div class="alert alert-info mt-4" data-aos="fade-up">
+            <a href="{% url 'login' %}" class="alert-link hover-gradient">
+                <i class="fas fa-sign-in-alt me-2"></i>Login
+            </a> to post a comment.
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .post-image {
+        max-height: 500px;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .post-image:hover {
+        transform: scale(1.02);
+    }
+    
+    .post-content {
+        font-size: 1.1rem;
+        line-height: 1.8;
+    }
+    
+    .post-content img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin: 1rem 0;
+    }
+    
+    .btn-like {
+        border: none;
+        background: none;
+        color: #6c757d;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-like:hover, .btn-like.liked {
+        color: #dc3545;
+        transform: scale(1.1);
+    }
+    
+    .gradient-text {
+        background: var(--gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Like button animation
+        const likeBtn = document.querySelector('.btn-like');
+        if (likeBtn) {
+            likeBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                fetch(this.href, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const icon = this.querySelector('i');
+                    const count = this.querySelector('span');
+                    count.textContent = data.total_likes;
+                    
+                    if (data.liked) {
+                        icon.classList.remove('far');
+                        icon.classList.add('fas');
+                        this.classList.add('liked');
+                        gsap.to(this, {scale: 1.3, duration: 0.3, yoyo: true, repeat: 1});
+                    } else {
+                        icon.classList.remove('fas');
+                        icon.classList.add('far');
+                        this.classList.remove('liked');
+                    }
+                });
+            });
+        }
+        
+        // Smooth scroll for comments
+        if (window.location.hash === '#comments') {
+            const commentsSection = document.querySelector('.comments-section');
+            if (commentsSection) {
+                setTimeout(() => {
+                    commentsSection.scrollIntoView({behavior: 'smooth'});
+                }, 300);
+            }
+        }
+    });
+</script>
+{% endblock %}

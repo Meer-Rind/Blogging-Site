@@ -1,0 +1,137 @@
+{% extends "blog/base.html" %}
+{% load crispy_forms_tags %}
+{% block title %}{% if form.instance.pk %}Update{% else %}Create{% endif %} Post{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm" data-aos="zoom-in">
+    <div class="card-body p-5">
+        <div class="text-center mb-5">
+            <h2 class="card-title gradient-text">
+                {% if form.instance.pk %}
+                <i class="fas fa-edit me-2"></i>Update Post
+                {% else %}
+                <i class="fas fa-plus-circle me-2"></i>Create Post
+                {% endif %}
+            </h2>
+            <div class="d-flex justify-content-center">
+                <div style="width: 100px; height: 4px; background: var(--gradient); border-radius: 2px;"></div>
+            </div>
+        </div>
+        
+        <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+            {% csrf_token %}
+            {{ form|crispy }}
+            
+            <div class="mt-4 d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary pulse">
+                    {% if form.instance.pk %}
+                    <i class="fas fa-save me-2"></i>Update
+                    {% else %}
+                    <i class="fas fa-paper-plane me-2"></i>Post
+                    {% endif %}
+                </button>
+                <a href="{% if form.instance.pk %}{% url 'post-detail' form.instance.pk %}{% else %}{% url 'home' %}{% endif %}" 
+                   class="btn btn-outline-secondary hover-effect">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .needs-validation .form-control {
+        border-radius: 8px;
+        padding: 0.8rem 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .needs-validation .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+    }
+    
+    .needs-validation textarea.form-control {
+        min-height: 200px;
+    }
+    
+    .file-upload {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+    }
+    
+    .file-upload-input {
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+    }
+    
+    .file-upload-label {
+        display: block;
+        padding: 0.5rem 1rem;
+        background: #f8f9fa;
+        border: 1px dashed #dee2e6;
+        border-radius: 8px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .file-upload-label:hover {
+        background: #e9ecef;
+        border-color: var(--primary-color);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Preview image before upload
+        const imageInput = document.querySelector('#id_image');
+        if (imageInput) {
+            imageInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        let preview = document.querySelector('.image-preview');
+                        if (!preview) {
+                            preview = document.createElement('div');
+                            preview.className = 'image-preview mb-3';
+                            imageInput.parentNode.insertBefore(preview, imageInput.nextSibling);
+                        }
+                        preview.innerHTML = `
+                            <img src="${event.target.result}" class="img-fluid rounded" style="max-height: 200px;">
+                            <button type="button" class="btn btn-sm btn-danger mt-2 remove-image">
+                                <i class="fas fa-times me-1"></i> Remove
+                            </button>
+                        `;
+                        
+                        document.querySelector('.remove-image').addEventListener('click', function() {
+                            imageInput.value = '';
+                            preview.remove();
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+        
+        // Form validation
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    });
+</script>
+{% endblock %}
